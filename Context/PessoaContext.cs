@@ -35,7 +35,7 @@ namespace LabClothingCollection.Context
             {
                 entity.ToTable("Pessoa");
 
-                entity.HasIndex(e => e.CpfCnpj, "UQ__Pessoa__0BCA032AACBB2372")
+                entity.HasIndex(e => e.CpfCnpj, "Identificador")
                     .IsUnique();
 
                 entity.Property(e => e.CpfCnpj)
@@ -55,6 +55,8 @@ namespace LabClothingCollection.Context
                 entity.Property(e => e.Telefone)
                     .HasMaxLength(20)   
                     .IsUnicode(false);
+
+
             });
 
             modelBuilder.Entity<Usuario>(entity =>

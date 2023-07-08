@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LabClothingCollection.Context;
 using LabClothingCollection.Models;
+using LabClothingCollection.DTOs;
 
 namespace LabClothingCollection.Controllers
 {
@@ -30,8 +31,9 @@ namespace LabClothingCollection.Controllers
           {
               return NotFound();
           }
-            var result =  await _context.Usuarios.ToListAsync().ConfigureAwait(true);
-            return Ok(result);
+            var usuariosOrdenados = await _context.Usuarios.ToListAsync().ConfigureAwait(true);
+
+            return Ok(usuariosOrdenados);
         }
 
         // GET: api/Usuarios/5
@@ -57,27 +59,38 @@ namespace LabClothingCollection.Controllers
         // PUT: api/Usuarios/5
         
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutUsuario(int id,[FromBody] Usuario usuario)
+        public async Task<IActionResult> AtualizarUsuario(int id,[FromBody] UsuarioAtualizadoDto usuarioDto)
         {
-            if (id != usuario.Id)
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (usuario == null)
             {
-                return BadRequest();
+                return NotFound("Usuário não encontrado!");
             }
 
-            _context.Entry(usuario).State = EntityState.Modified;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             try
             {
+                usuario.Nome = usuarioDto.Nome;
+                usuario.Genero = usuarioDto.Genero;
+                usuario.DataNascimento = usuarioDto.DataNascimento;
+                usuario.Telefone = usuarioDto.Telefone;
+                usuario.Tipo = usuarioDto.Tipo;
                 await _context.SaveChangesAsync();
+                 _context.Entry(usuario).State = EntityState.Modified;
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!UsuarioExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Usuário não encontrado!");
                 }
                 else
                 {
@@ -85,7 +98,7 @@ namespace LabClothingCollection.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Os dados foram atualizados com sucesso!");
         }
 
         // POST: api/Usuarios
