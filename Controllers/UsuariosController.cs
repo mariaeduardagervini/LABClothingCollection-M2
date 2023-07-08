@@ -22,8 +22,8 @@ namespace LabClothingCollection.Controllers
             _context = context;
         }
 
-        // GET: api/Usuarios
-        [HttpGet]
+        
+        [HttpGet("/api/usuario/")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
         {
@@ -36,8 +36,8 @@ namespace LabClothingCollection.Controllers
             return Ok(usuariosOrdenados);
         }
 
-        // GET: api/Usuarios/5
-        [HttpGet("{id}")]
+        
+        [HttpGet("/api/usuario/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
@@ -56,9 +56,9 @@ namespace LabClothingCollection.Controllers
             return Ok(usuario);
         }
 
-        // PUT: api/Usuarios/5
+       
         
-        [HttpPut("{id}")]
+        [HttpPut("/api/usuario/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,9 +101,52 @@ namespace LabClothingCollection.Controllers
             return Ok("Os dados foram atualizados com sucesso!");
         }
 
-        // POST: api/Usuarios
         
-        [HttpPost]
+        [HttpPut("/api/usuario/{id}/status")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AtualizarStatusUsuario(int id, [FromBody] AtualizacaoStatusDto atualizacaoStatusDto)
+        {
+          
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (usuario == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+                        
+            usuario.Status = (StatusUsuario)Enum.Parse(typeof(StatusUsuario), atualizacaoStatusDto.Status);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                _context.Entry(usuario).State = EntityState.Modified;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UsuarioExists(usuario.Id))
+                {
+                    return NotFound("Usuário não encontrado.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok("Os dados de status de usuário foram atualizados!");
+        }
+
+        
+
+        [HttpPost("/api/usuario")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(StatusCodes.Status409Conflict)] 
@@ -127,9 +170,8 @@ namespace LabClothingCollection.Controllers
 
         }
 
-        // DELETE: api/Usuarios/5
-
-        [HttpDelete("{id}")]
+       
+        [HttpDelete("/api/usuario/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUsuario(int id)
