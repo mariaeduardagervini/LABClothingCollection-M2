@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using LabClothingCollection.Context;
 using LabClothingCollection.Models;
+using LabClothingCollection.DTOs;
 
 namespace LabClothingCollection.Controllers
 {
@@ -45,27 +46,41 @@ namespace LabClothingCollection.Controllers
             return colecao;
         }
 
-        // PUT: api/Colecoes/5
-        
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutColecao(int id, Colecao colecao)
+                
+        [HttpPut("/api/colecoes/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AtualizarColecao(int id, [FromBody] ColecaoAtualizadaDto colecaoDto)
         {
-            if (id != colecao.IdColecao)
+            var colecao = await _context.Colecao.FirstOrDefaultAsync(u => u.IdColecao == id);
+
+            if (colecao == null)
             {
-                return BadRequest();
+                return NotFound("Coleção não encontrada!");
             }
 
-            _context.Entry(colecao).State = EntityState.Modified;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             try
             {
+                colecao.NomeColecao = colecaoDto.NomeColecao;
+                colecao.Marca = colecaoDto.Marca;
+                colecao.Orcamento = colecaoDto.Orcamento;
+                colecao.AnoLancamento = colecaoDto.AnoLancamento;
+                colecao.Estacao = colecaoDto.Estacao;
+                colecao.Estado = colecaoDto.Estado;
                 await _context.SaveChangesAsync();
+                _context.Entry(colecao).State = EntityState.Modified;
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!ColecaoExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Coleção não encontrada!");
                 }
                 else
                 {
@@ -73,10 +88,10 @@ namespace LabClothingCollection.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Os dados de coleção foram atualizados com sucesso!");
         }
 
-                
+
         [HttpPost("/api/colecoes")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
