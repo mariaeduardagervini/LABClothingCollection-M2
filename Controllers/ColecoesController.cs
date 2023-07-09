@@ -45,6 +45,23 @@ namespace LabClothingCollection.Controllers
             return Ok(colecoes);
         }
 
+        [HttpGet("/api/colecoes/{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Colecao>> ListarColecao(int id)
+        {
+           
+            var colecao = await _context.Colecao.FirstOrDefaultAsync(x => x.IdColecao == id).ConfigureAwait(true);
+
+            if (colecao == null)
+            {
+                return NotFound("Coleção não encontrada!");
+            }
+
+            return Ok(colecao);
+        }
+
+
 
         [HttpPut("/api/colecoes/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -140,7 +157,7 @@ namespace LabClothingCollection.Controllers
             return CreatedAtAction("ListarColecoes", new { id = colecao.IdColecao }, colecao);
         }
 
-        // DELETE: api/Colecoes/5
+     
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColecao(int id)
         {
