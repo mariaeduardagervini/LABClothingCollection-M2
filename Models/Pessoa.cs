@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace LabClothingCollection.Models
@@ -9,6 +11,7 @@ namespace LabClothingCollection.Models
     public partial class Pessoa
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Nome é obrigatório!")]
@@ -24,6 +27,7 @@ namespace LabClothingCollection.Models
 
         [Required]
         [RegularExpression(@"^\d{11}$|^\d{14}$", ErrorMessage = "O CPF/CNPJ deve ter 11 ou 14 dígitos.")]
+        
         public string CpfCnpj { get; set; } = null!;
 
         public string? Telefone { get; set; }

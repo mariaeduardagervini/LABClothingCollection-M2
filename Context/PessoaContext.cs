@@ -20,6 +20,10 @@ namespace LabClothingCollection.Context
         public virtual DbSet<Pessoa> Pessoas { get; set; } = null!;
         public virtual DbSet<Usuario>? Usuarios { get; set; }
 
+        public virtual DbSet<Colecao> Colecao { get; set; } = null!;
+
+        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -35,7 +39,7 @@ namespace LabClothingCollection.Context
             {
                 entity.ToTable("Pessoa");
 
-                entity.HasIndex(e => e.CpfCnpj, "Identificador")
+                entity.HasIndex(e => e.CpfCnpj, "IdResposavel")
                     .IsUnique();
 
                 entity.Property(e => e.CpfCnpj)
@@ -76,12 +80,15 @@ namespace LabClothingCollection.Context
             });
 
             modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, Nome = "Maria da Silva", Genero= "F", CpfCnpj= "380.273.689-36", Telefone= "99819-7607", Email = "maria@example.com", Tipo= 0, Status= 0 },
-            new Usuario { Id = 2, Nome = "José Andrade", Genero = "M", CpfCnpj = "808.897.949-87", Telefone = "98772-8465", Email = "josee2@example.com", Tipo = 0, Status = 0 },
-            new Usuario { Id = 3, Nome = "Bruna Lopez", Genero = "F", CpfCnpj = "125.475.619-13", Telefone = "99151-3437", Email = "bruna@example.com", Tipo = 0, Status = 0 },
-            new Usuario { Id = 4, Nome = "Pedro Assis", Genero = "M", CpfCnpj = "047.634.239-24", Telefone = "98474-3877", Email = "pedro@example.com", Tipo = 0, Status = 0 },
+            new Usuario { Id = 1, Nome = "Maria da Silva", Genero = "F", CpfCnpj = "38027368936", Telefone = "99819-7607", Email = "maria@example.com", Tipo = 0, Status = 0 },
+            new Usuario { Id = 2, Nome = "José Andrade", Genero = "M", CpfCnpj = "80889794987", Telefone = "98772-8465", Email = "josee2@example.com", Tipo = 0, Status = 0 },
+            new Usuario { Id = 3, Nome = "Bruna Lopez", Genero = "F", CpfCnpj = "12547561913", Telefone = "99151-3437", Email = "bruna@example.com", Tipo = 0, Status = 0 },
+            new Usuario { Id = 4, Nome = "Pedro Assis", Genero = "M", CpfCnpj = "04763423924", Telefone = "98474-3877", Email = "pedro@example.com", Tipo = 0, Status = 0 },
             new Usuario { Id = 5, Nome = "Empresa Julia Ltda", Genero = "F", CpfCnpj = "20996384000151", Telefone = "3278-1022", Email = "julia@empresa.com", Tipo = 0, Status = 0 }
         );
+           
+
+
 
             OnModelCreatingPartial(modelBuilder);
             
@@ -90,7 +97,7 @@ namespace LabClothingCollection.Context
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-       
+              
 
      
     }

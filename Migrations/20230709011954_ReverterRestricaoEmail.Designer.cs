@@ -4,6 +4,7 @@ using LabClothingCollection.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabClothingCollection.Migrations
 {
     [DbContext(typeof(PessoaContext))]
-    partial class PessoaContextModelSnapshot : ModelSnapshot
+    [Migration("20230709011954_ReverterRestricaoEmail")]
+    partial class ReverterRestricaoEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,42 +23,6 @@ namespace LabClothingCollection.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("LabClothingCollection.Models.Colecao", b =>
-                {
-                    b.Property<int>("IdColecao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdColecao"), 1L, 1);
-
-                    b.Property<DateTime>("AnoLancamento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Estacao")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<long>("IdResponsavel")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Marca")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeColecao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Orcamento")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("IdColecao");
-
-                    b.ToTable("Colecao");
-                });
 
             modelBuilder.Entity("LabClothingCollection.Models.Pessoa", b =>
                 {
@@ -97,7 +63,7 @@ namespace LabClothingCollection.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CpfCnpj" }, "IdResposavel")
+                    b.HasIndex(new[] { "CpfCnpj" }, "Identificador")
                         .IsUnique();
 
                     b.ToTable("Pessoa", (string)null);
@@ -128,7 +94,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 1,
-                            CpfCnpj = "38027368936",
+                            CpfCnpj = "380.273.689-36",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "F",
                             Nome = "Maria da Silva",
@@ -140,7 +106,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 2,
-                            CpfCnpj = "80889794987",
+                            CpfCnpj = "808.897.949-87",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "M",
                             Nome = "José Andrade",
@@ -152,7 +118,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 3,
-                            CpfCnpj = "12547561913",
+                            CpfCnpj = "125.475.619-13",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "F",
                             Nome = "Bruna Lopez",
@@ -164,7 +130,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 4,
-                            CpfCnpj = "04763423924",
+                            CpfCnpj = "047.634.239-24",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "M",
                             Nome = "Pedro Assis",
