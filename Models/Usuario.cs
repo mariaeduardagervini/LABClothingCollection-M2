@@ -15,7 +15,7 @@ public class Usuario : Pessoa
     public TipoUsuario Tipo { get; set; }
 
     [Range(0,1, ErrorMessage="0 = Ativo / 1 = Inativo")]
-    public StatusUsuario Status { get; set; }
+    public StatusUsuario? Status { get; set; }
 }
 
 public enum TipoUsuario
@@ -28,8 +28,8 @@ public enum TipoUsuario
 
 public enum StatusUsuario
 {
-    Ativo,
-    Inativo
+    ATIVO,
+    INATIVO
 }
 
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LabClothingCollection.Context;
 using LabClothingCollection.Models;
 using LabClothingCollection.DTOs;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LabClothingCollection.Controllers
 {
@@ -23,20 +24,34 @@ namespace LabClothingCollection.Controllers
         }
 
         
-        [HttpGet("/api/usuario/")]
+        [HttpGet("/api/usuarios")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
+        public async Task<IActionResult> ListarUsuarios([FromQuery] ListarUsuariosDto dto)
         {
-          if (_context.Usuarios == null)
-          {
-              return NotFound();
-          }
-            var usuariosOrdenados = await _context.Usuarios.ToListAsync().ConfigureAwait(true);
+            IQueryable<Usuario> query = _context.Usuarios;
 
-            return Ok(usuariosOrdenados);
+            if (!string.IsNullOrEmpty(dto.Status))
+            {
+                if (dto.Status.ToUpper() == "ATIVO")
+                {
+                    query = query.Where(u => u.Status == StatusUsuario.ATIVO);
+                }
+                else if (dto.Status.ToUpper() == "INATIVO")
+                {
+                    query = query.Where(u => u.Status == StatusUsuario.INATIVO);
+                }
+                else
+                {
+                    return BadRequest("Valor inválido para o parâmetro 'status'. Os valores possíveis são 'ATIVO' ou 'INATIVO'.");
+                }
+            }
+
+            List<Usuario> usuarios = await query.ToListAsync();
+
+            return Ok(usuarios);
         }
 
-        
+
         [HttpGet("/api/usuario/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -58,7 +73,7 @@ namespace LabClothingCollection.Controllers
 
        
         
-        [HttpPut("/api/usuario/{id}")]
+        [HttpPut("/api/usuarios/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -146,11 +161,11 @@ namespace LabClothingCollection.Controllers
 
         
 
-        [HttpPost("/api/usuario")]
+        [HttpPost("/api/usuarios")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(StatusCodes.Status409Conflict)] 
-        public async Task<ActionResult<Usuario>> PostUsuario([FromBody] Usuario usuario)
+        public async Task<ActionResult<Usuario>> CriarUsuario([FromBody] Usuario usuario)
         {
             if (!ModelState.IsValid)
             {
@@ -174,7 +189,7 @@ namespace LabClothingCollection.Controllers
         [HttpDelete("/api/usuario/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteUsuario(int id)
+        public async Task<IActionResult> DeletarUsuario(int id)
         {
             if (_context.Usuarios == null)
             {
@@ -197,4 +212,6 @@ namespace LabClothingCollection.Controllers
             return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
+
+    
 }
