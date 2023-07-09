@@ -91,6 +91,33 @@ namespace LabClothingCollection.Controllers
             return Ok("Os dados de coleção foram atualizados com sucesso!");
         }
 
+        [HttpPut("/api/colecoes/{id}/status")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult AtualizarEstadoColecao(int id, [FromBody] AtualizacaoEstadoColecaoDto estadoDto)
+        {
+            var colecao = _context.Colecao.FirstOrDefault(c => c.IdColecao == id);
+            if (colecao == null)
+            {
+                return NotFound("Coleção não encontrada.");
+            }
+
+            if (!Enum.IsDefined(typeof(EstadoNoSistema), estadoDto.Estado))
+            {
+                return BadRequest("Valor inválido para o campo 'status'.");
+            }
+
+            colecao.Estado = estadoDto.Estado;
+
+            _context.SaveChanges();
+
+            string statusAtualizado = colecao.Estado == 0 ? "Ativo" : "Inativo";
+
+            return Ok("Os dados de estado no sistema da coleção foram alterados para: " + statusAtualizado);
+        }
+
+
 
         [HttpPost("/api/colecoes")]
         [ProducesResponseType(StatusCodes.Status201Created)]
