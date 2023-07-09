@@ -158,17 +158,14 @@ namespace LabClothingCollection.Controllers
         }
 
      
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteColecao(int id)
+        [HttpDelete("/api/colecoes/{id}")]
+        public async Task<IActionResult> DeletarColecao(int id)
         {
-            if (_context.Colecao == null)
-            {
-                return NotFound();
-            }
+            
             var colecao = await _context.Colecao.FindAsync(id);
             if (colecao == null)
             {
-                return NotFound();
+                return NotFound("Coleção não encontrada!");
             }
 
             _context.Colecao.Remove(colecao);

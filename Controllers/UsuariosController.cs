@@ -183,14 +183,11 @@ namespace LabClothingCollection.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeletarUsuario(int id)
         {
-            if (_context.Usuarios == null)
-            {
-                return NotFound();
-            }
+           
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(true);
             if (usuario == null)
             {
-                return NotFound();
+                return NotFound("Usuário não encontrado!");
             }
 
             _context.Usuarios.Remove(usuario);
