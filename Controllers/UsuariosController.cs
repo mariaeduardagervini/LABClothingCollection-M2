@@ -65,7 +65,7 @@ namespace LabClothingCollection.Controllers
 
             if (usuario == null)
             {
-                return NotFound();
+                return NotFound("Usuário não encontrado!");
             }
 
             return Ok(usuario);
@@ -73,7 +73,7 @@ namespace LabClothingCollection.Controllers
 
        
         
-        [HttpPut("/api/usuarios/{id}")]
+        [HttpPut("/api/usuario/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
