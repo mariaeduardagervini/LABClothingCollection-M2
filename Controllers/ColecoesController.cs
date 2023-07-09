@@ -17,36 +17,35 @@ namespace LabClothingCollection.Controllers
             _context = context;
         }
 
-        // GET: api/Colecoes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Colecao>>> ListarColecoes()
+        
+        [HttpGet("/api/colecoes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ListarColecoes([FromQuery] ListarColecoesDto dto)
         {
-          if (_context.Colecao == null)
-          {
-              return NotFound();
-          }
-            return await _context.Colecao.ToListAsync();
-        }
+            IQueryable<Colecao> query = _context.Colecao;
 
-        // GET: api/Colecoes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Colecao>> GetColecao(int id)
-        {
-          if (_context.Colecao == null)
-          {
-              return NotFound();
-          }
-            var colecao = await _context.Colecao.FindAsync(id);
-
-            if (colecao == null)
+            if (!string.IsNullOrEmpty(dto.status))
             {
-                return NotFound();
+                if (dto.status.ToUpper() == "ATIVA")
+                {
+                    query = query.Where(u => u.Estado == EstadoNoSistema.ATIVA);
+                }
+                else if (dto.status.ToUpper() == "INATIVA")
+                {
+                    query = query.Where(u => u.Estado == EstadoNoSistema.INATIVA);
+                }
+                else
+                {
+                    return BadRequest("Valor inválido para o parâmetro 'status'. Os valores possíveis são 'ATIVA' ou 'INATIVA'.");
+                }
             }
 
-            return colecao;
+            List<Colecao> colecoes = await query.ToListAsync();
+
+            return Ok(colecoes);
         }
 
-                
+
         [HttpPut("/api/colecoes/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

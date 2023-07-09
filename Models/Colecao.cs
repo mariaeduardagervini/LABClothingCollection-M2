@@ -49,7 +49,7 @@ public enum Estacao
 
 public enum EstadoNoSistema
 {
-    Ativa,
-    Inativa
+    ATIVA,
+    INATIVA
 }
 
