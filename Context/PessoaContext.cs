@@ -22,7 +22,7 @@ namespace LabClothingCollection.Context
 
         public virtual DbSet<Colecao> Colecao { get; set; } = null!;
 
-        
+        public virtual DbSet<Modelo> Modelos { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -39,7 +39,7 @@ namespace LabClothingCollection.Context
             {
                 entity.ToTable("Pessoa");
 
-                entity.HasIndex(e => e.CpfCnpj, "IdResposavel")
+                entity.HasIndex(e => e.CpfCnpj, "CpfCnpj")
                     .IsUnique();
 
                 entity.Property(e => e.CpfCnpj)
@@ -57,15 +57,24 @@ namespace LabClothingCollection.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.Telefone)
-                    .HasMaxLength(20)   
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
 
             });
 
+            modelBuilder.Entity<Pessoa>()
+               .HasDiscriminator<string>("Discriminator")
+               .HasValue<Pessoa>("Pessoa");
+
+            modelBuilder.Entity<Usuario>()
+                .HasBaseType<Pessoa>()
+                .HasDiscriminator<string>("Discriminator")
+                .HasValue<Usuario>("Usuario");
+
             modelBuilder.Entity<Usuario>(entity =>
             {
-              
+
                 entity.Property(u => u.Email)
                     .IsRequired()
                     .HasMaxLength(255)
@@ -76,29 +85,87 @@ namespace LabClothingCollection.Context
                 .HasConversion<string>();
 
                 entity.Property(u => u.Status)
-                    .HasConversion<string>();
+                .HasColumnName("Status")
+                .HasConversion<string>();
             });
 
-            modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, Nome = "Maria da Silva", Genero = "F", CpfCnpj = "38027368936", Telefone = "99819-7607", Email = "maria@example.com", Tipo = 0, Status = 0 },
-            new Usuario { Id = 2, Nome = "José Andrade", Genero = "M", CpfCnpj = "80889794987", Telefone = "98772-8465", Email = "josee2@example.com", Tipo = 0, Status = 0 },
-            new Usuario { Id = 3, Nome = "Bruna Lopez", Genero = "F", CpfCnpj = "12547561913", Telefone = "99151-3437", Email = "bruna@example.com", Tipo = 0, Status = 0 },
-            new Usuario { Id = 4, Nome = "Pedro Assis", Genero = "M", CpfCnpj = "04763423924", Telefone = "98474-3877", Email = "pedro@example.com", Tipo = 0, Status = 0 },
-            new Usuario { Id = 5, Nome = "Empresa Julia Ltda", Genero = "F", CpfCnpj = "20996384000151", Telefone = "3278-1022", Email = "julia@empresa.com", Tipo = 0, Status = 0 }
-        );
            
+            modelBuilder.Entity<Colecao>(entity =>
+            {
+                entity.HasKey(c => c.IdColecao);
 
+
+                entity.Property(c => c.NomeColecao)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(c => c.IdResponsavel)
+                    .IsRequired();
+
+                entity.Property(c => c.Marca)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(c => c.Orcamento)
+                    .IsRequired();
+
+                entity.Property(c => c.AnoLancamento)
+                    .IsRequired()
+                    .HasColumnType("date");
+
+                entity.Property(c => c.Estacao)
+                    .IsRequired()
+                    .HasConversion<string>()
+                    .HasMaxLength(10);
+
+                entity.Property(c => c.Estado)
+                    .IsRequired()
+                    .HasConversion<string>()
+                    .HasMaxLength(10);
+            });
+
+            modelBuilder.Entity<Colecao>()
+        .       HasOne<Pessoa>()
+                .WithMany()
+                .HasForeignKey(c => c.IdResponsavel)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Modelo>()
+                .HasKey(m => m.IdModelo);
+
+            modelBuilder.Entity<Modelo>()
+                .Property(m => m.NomeModelo)
+                .IsRequired();
+
+            modelBuilder.Entity<Modelo>()
+                .Property(m => m.ColecaoId)
+                .IsRequired();
+
+            modelBuilder.Entity<Modelo>()
+                .Property(m => m.Tipo)
+                .IsRequired()
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Modelo>()
+                .Property(m => m.Layout)
+                .IsRequired()
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Modelo>()
+                .HasOne<Colecao>()
+                .WithMany()
+                .HasForeignKey(m => m.ColecaoId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             OnModelCreatingPartial(modelBuilder);
-            
 
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-              
 
-     
     }
 }

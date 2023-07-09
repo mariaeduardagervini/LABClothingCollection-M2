@@ -28,8 +28,8 @@ public enum TipoUsuario
 
 public enum StatusUsuario
 {
-    ATIVO,
-    INATIVO
+    Ativo,
+    Inativo
 }
 
 

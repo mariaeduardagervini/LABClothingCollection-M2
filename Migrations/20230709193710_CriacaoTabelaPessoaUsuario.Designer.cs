@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabClothingCollection.Migrations
 {
     [DbContext(typeof(PessoaContext))]
-    [Migration("20230709010423_CriacaoEAlteracaoDadosTabelas")]
-    partial class CriacaoEAlteracaoDadosTabelas
+    [Migration("20230709193710_CriacaoTabelaPessoaUsuario")]
+    partial class CriacaoTabelaPessoaUsuario
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,76 @@ namespace LabClothingCollection.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("LabClothingCollection.Models.Colecao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AnoLancamento")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Estacao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("IdResponsavel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Marca")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NomeColecao")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<decimal>("Orcamento")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colecao");
+                });
+
+            modelBuilder.Entity("LabClothingCollection.Models.Modelo", b =>
+                {
+                    b.Property<int>("IdModelo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdModelo"), 1L, 1);
+
+                    b.Property<int>("IdColecao")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Layout")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NomeModelo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdModelo");
+
+                    b.HasIndex("IdColecao");
+
+                    b.ToTable("Modelos");
+                });
 
             modelBuilder.Entity("LabClothingCollection.Models.Pessoa", b =>
                 {
@@ -63,7 +133,7 @@ namespace LabClothingCollection.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CpfCnpj" }, "Identificador")
+                    b.HasIndex(new[] { "CpfCnpj" }, "IdResposavel")
                         .IsUnique();
 
                     b.ToTable("Pessoa", (string)null);
@@ -94,7 +164,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 1,
-                            CpfCnpj = "380.273.689-36",
+                            CpfCnpj = "38027368936",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "F",
                             Nome = "Maria da Silva",
@@ -106,7 +176,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 2,
-                            CpfCnpj = "808.897.949-87",
+                            CpfCnpj = "80889794987",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "M",
                             Nome = "José Andrade",
@@ -118,7 +188,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 3,
-                            CpfCnpj = "125.475.619-13",
+                            CpfCnpj = "12547561913",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "F",
                             Nome = "Bruna Lopez",
@@ -130,7 +200,7 @@ namespace LabClothingCollection.Migrations
                         new
                         {
                             Id = 4,
-                            CpfCnpj = "047.634.239-24",
+                            CpfCnpj = "04763423924",
                             DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Genero = "M",
                             Nome = "Pedro Assis",
@@ -151,6 +221,24 @@ namespace LabClothingCollection.Migrations
                             Status = "ATIVO",
                             Tipo = "Administrador"
                         });
+                });
+
+            modelBuilder.Entity("LabClothingCollection.Models.Colecao", b =>
+                {
+                    b.HasOne("LabClothingCollection.Models.Pessoa", null)
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LabClothingCollection.Models.Modelo", b =>
+                {
+                    b.HasOne("LabClothingCollection.Models.Colecao", null)
+                        .WithMany()
+                        .HasForeignKey("IdColecao")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

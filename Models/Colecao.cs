@@ -13,11 +13,11 @@ public class Colecao
     [Required(ErrorMessage = "O campo Nome da Coleção é obrigatório.")]
     public string NomeColecao { get; set; }
 
-    [Required(ErrorMessage = "O campo IdResponsavel é obrigatória e deve ser o CpfCnpj do usuário ativo!")]
-    [ForeignKey("CpfCnpj")]
-    public long IdResponsavel { get; set; }
+    [Required(ErrorMessage = "O campo IdResponsavel é obrigatório!")]
+    [ForeignKey("Pessoa")]
+    public int IdResponsavel { get; set; }
 
-    protected virtual Usuario Responsavel { get; set; }
+    protected virtual Pessoa Pessoa { get; set; }
 
     [Required(ErrorMessage = "O campo Marca é obrigatório.")]
     public string Marca { get; set; }

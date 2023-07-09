@@ -30,11 +30,11 @@ namespace LabClothingCollection.Controllers
             {
                 if (dto.Status.ToUpper() == "ATIVO")
                 {
-                    query = query.Where(u => u.Status == StatusUsuario.ATIVO);
+                    query = query.Where(u => u.Status == StatusUsuario.Ativo);
                 }
                 else if (dto.Status.ToUpper() == "INATIVO")
                 {
-                    query = query.Where(u => u.Status == StatusUsuario.INATIVO);
+                    query = query.Where(u => u.Status == StatusUsuario.Inativo);
                 }
                 else
                 {
