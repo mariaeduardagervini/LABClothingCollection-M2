@@ -13,43 +13,64 @@ namespace LabClothingCollection.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ModeloesController : ControllerBase
+    public class ModelosController : ControllerBase
     {
         private readonly PessoaContext _context;
 
-        public ModeloesController(PessoaContext context)
+        public ModelosController(PessoaContext context)
         {
             _context = context;
         }
 
-        // GET: api/Modeloes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelos()
+        
+        [HttpGet("/api/modelos")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ListarModelos([FromQuery] ListarModelosDto dto)
         {
-          if (_context.Modelos == null)
-          {
-              return NotFound();
-          }
-            return await _context.Modelos.ToListAsync();
+           
+            IQueryable<Modelo> query = _context.Modelos;
+
+            if (!string.IsNullOrEmpty(dto.layout))
+            {
+                string layoutUpperCase = dto.layout.ToUpper();
+                if (layoutUpperCase == "BORDADO")
+                {
+                    query = query.Where(m => m.Layout == LayoutModelo.BORDADO);
+                }
+                else if (layoutUpperCase == "ESTAMPA")
+                {
+                    query = query.Where(m => m.Layout == LayoutModelo.ESTAMPA);
+                }
+                else if (layoutUpperCase == "LISO")
+                {
+                    query = query.Where(m => m.Layout == LayoutModelo.LISO);
+                }
+                else
+                {
+                    return BadRequest("Valor inválido para o parâmetro 'layout'. Os valores possíveis são 'BORDADO', 'ESTAMPA' ou 'LISO'.");
+                }
+            }
+            List<Modelo> modelos = await query.ToListAsync();
+
+            return Ok(modelos);
         }
 
-        // GET: api/Modeloes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Modelo>> GetModelo(int id)
+        [HttpGet("/api/modelos/{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Modelo>> ListarModelo(int id)
         {
-          if (_context.Modelos == null)
-          {
-              return NotFound();
-          }
-            var modelo = await _context.Modelos.FindAsync(id);
+
+            var modelo = await _context.Modelos.FirstOrDefaultAsync(x => x.IdModelo == id).ConfigureAwait(true);
 
             if (modelo == null)
             {
-                return NotFound();
+                return NotFound("Modelo não encontrado!");
             }
 
-            return modelo;
+            return Ok(modelo);
         }
+
 
         [HttpPut("/api/modelos/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -99,7 +120,7 @@ namespace LabClothingCollection.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<Modelo>> CadastroModelo(Modelo modelo)
+        public async Task<ActionResult<Modelo>> CadastroModelo([FromBody] Modelo modelo)
         {
             if (!ModelState.IsValid)
             {
@@ -118,18 +139,14 @@ namespace LabClothingCollection.Controllers
         }
 
 
-        // DELETE: api/Modeloes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteModelo(int id)
+        [HttpDelete("/api/modelos/{id}")]
+        public async Task<IActionResult> DeletarModelo(int id)
         {
-            if (_context.Modelos == null)
-            {
-                return NotFound();
-            }
+
             var modelo = await _context.Modelos.FindAsync(id);
             if (modelo == null)
             {
-                return NotFound();
+                return NotFound("Modelo não encontrado!");
             }
 
             _context.Modelos.Remove(modelo);

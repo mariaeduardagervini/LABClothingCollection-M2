@@ -43,8 +43,8 @@ public enum TipoModelo
 
 public enum LayoutModelo
 {
-    Bordado,
-    Estampa,
-    Liso
+    BORDADO,
+    ESTAMPA,
+    LISO
 }
 

@@ -139,7 +139,7 @@ namespace LabClothingCollection.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<Colecao>> CadatroColecao(Colecao colecao)
+        public async Task<ActionResult<Colecao>> CadatroColecao([FromBody] Colecao colecao)
         {
             if (!ModelState.IsValid)
             {

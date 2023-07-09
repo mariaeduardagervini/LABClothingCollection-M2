@@ -93,6 +93,7 @@ namespace LabClothingCollection.Context
             modelBuilder.Entity<Colecao>(entity =>
             {
                 entity.HasKey(c => c.IdColecao);
+                
 
 
                 entity.Property(c => c.NomeColecao)
@@ -158,6 +159,14 @@ namespace LabClothingCollection.Context
                 .HasForeignKey(m => m.ColecaoId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Colecao>()
+             .Property(c => c.IdColecao)
+             .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Modelo>()
+                .Property(m => m.IdModelo)
+                .ValueGeneratedOnAdd();
 
 
             OnModelCreatingPartial(modelBuilder);
