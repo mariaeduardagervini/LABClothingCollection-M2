@@ -2,6 +2,11 @@
 
 Projeto avaliativo do Módulo 02 do curso DEVinHouse (Audaces) desenvolvido com o objetivo de criar um sistema para gestão de coleções de uma empresa.
 
+# 📉 Fluxograma de Dados
+
+
+<img src="/Fluxograma.png" alt="Fluxograma">
+
 # 📉 Problemas resolvidos 
 
 Nesse desenvolvimento de aplicação, é possível solucionar alguns problemas de estrutura que faltaram no Primeiro Módulo do projeto. Agora, com o Back-End estruturado, será possível integrar as ferramentas e fornecer ao cliente final uma ferramenta completa de armazenamento e gerenciamento de dados.
