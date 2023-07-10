@@ -22,6 +22,8 @@ Para executar o projeto, siga os passos abaixo:
 				<li>Microsoft.AspNetCore.Mvc.NewtonsoftJson</li>
 		
 			</ul>
+</ul>
+<ul>
 	<li>Configure a conexão do Visual Studio com o SQL Server Express 2019.</li>
 	<li>Inicie a depuração do projeto e acesse-o através do Swagger no navegador ou utilizando a ferramenta Postman. </li>
 </ul>
