@@ -20,8 +20,7 @@ Para executar o projeto, siga os passos abaixo:
 				<li>Microsoft.EntityFrameworkCore.SqlServer</li>
 				<li>Microsoft.EntityFrameworkCore.Design</li>
 				<li>Microsoft.AspNetCore.Mvc.NewtonsoftJson</li>
-		
-			</ul>
+	
 </ul>
 <ul>
 	<li>Configure a conexão do Visual Studio com o SQL Server Express 2019.</li>
